@@ -1,27 +1,28 @@
 package io.lsn.controller;
 
-import io.lsn.domain.ImportRequest;
-import io.lsn.service.DictionaryService;
+import io.lsn.domain.UploadConfirmation;
+import io.lsn.service.DictionaryToLocationUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import javax.servlet.annotation.MultipartConfig;
+import java.io.IOException;
 
 @RestController
+@MultipartConfig(fileSizeThreshold = 20971520)
 public class DictionaryController {
 
-    private final static String uploadDirectory = "sciezka";
-
     @Autowired
-    private DictionaryService dictionaryService;
+    DictionaryToLocationUploadService dictionaryToLocationUploadService;
 
     @RequestMapping(value = "/dictionary/uploadToLocation", method = RequestMethod.POST)
-    public void importDictionary(@RequestBody ImportRequest importRequest) throws FileNotFoundException {
+    public ResponseEntity<UploadConfirmation> uploadToLocation(@RequestParam("dictionary") MultipartFile multipartFile) throws IOException {
 
-        FileInputStream fileInputStream = new FileInputStream(this.uploadDirectory + "/" + importRequest.getFileName());
-        
+        return new ResponseEntity<>(dictionaryToLocationUploadService.uploadFileToLocation(multipartFile), HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "/home")
@@ -29,22 +30,13 @@ public class DictionaryController {
     {
         return "hello";
     }
-//    @RequestMapping(value = "/dictionary/downloadFromLocation", method = RequestMethod.GET)
-//    public ResponseEntity importDictionary(@RequestParam) {
-//
-//    }
-//
+
 //    @RequestMapping(value = "/dictionary/importToDB", method = RequestMethod.POST)
 //    public ResponseEntity importDictionary(@RequestBody ImportRequest importRequest) {
 //
 //    }
 //
 //    @RequestMapping(value = "/dictionary/exportToXlsx", method = RequestMethod.GET)
-//    public ResponseEntity importDictionary(@RequestParam ) {
-//
-//    }
-//
-//    @RequestMapping(value = "/dictionary/import", method = RequestMethod.GET)
 //    public ResponseEntity importDictionary(@RequestParam ) {
 //
 //    }
