@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 @Service
-public class DictionaryToLocationUploadService {
+public class DictionaryUploadToLocationService {
 
     private static String dataFileName = "";
     private static Path uploadDirectory = null;
@@ -19,6 +19,13 @@ public class DictionaryToLocationUploadService {
     public UploadConfirmation uploadFileToLocation (MultipartFile multipartFile) throws IOException {
 
         UploadConfirmation uploadConfirmation = new UploadConfirmation();
+
+        if(!multipartFile.getOriginalFilename().endsWith(".xlsx")) {
+            uploadConfirmation.setFileName(multipartFile.getOriginalFilename());
+            uploadConfirmation.setOperationDate(LocalDateTime.now());
+            uploadConfirmation.setUploadMessage("Wybrany plik nie jest arkuszem 'xlsx'.");
+            return uploadConfirmation;
+        }
 
         if(multipartFile.isEmpty()) {
             uploadConfirmation.setFileName(multipartFile.getOriginalFilename());

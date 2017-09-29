@@ -1,13 +1,13 @@
 package io.lsn.controller;
 
 import io.lsn.domain.UploadConfirmation;
-import io.lsn.service.DictionaryToLocationUploadService;
+import io.lsn.service.DictionaryImportIntoDBService;
+import io.lsn.service.DictionaryUploadToLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 
@@ -16,12 +16,22 @@ import java.io.IOException;
 public class DictionaryController {
 
     @Autowired
-    DictionaryToLocationUploadService dictionaryToLocationUploadService;
+    DictionaryUploadToLocationService dictionaryUploadToLocationService;
+
+    @Autowired
+    DictionaryImportIntoDBService dictionaryImportIntoDBService;
 
     @RequestMapping(value = "/dictionary/uploadToLocation", method = RequestMethod.POST)
     public ResponseEntity<UploadConfirmation> uploadToLocation(@RequestParam("dictionary") MultipartFile multipartFile) throws IOException {
 
-        return new ResponseEntity<>(dictionaryToLocationUploadService.uploadFileToLocation(multipartFile), HttpStatus.OK);
+        return new ResponseEntity<>(dictionaryUploadToLocationService.uploadFileToLocation(multipartFile), HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/dictionary/importIntoDB", method = RequestMethod.POST)
+    public ResponseEntity<UploadConfirmation> importIntoDB(@RequestParam("dictionary") MultipartFile multipartFile) {
+
+        return new ResponseEntity<>(dictionaryImportIntoDBService.importFileIntoDB(multipartFile), HttpStatus.OK);
 
     }
 
