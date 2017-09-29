@@ -2,6 +2,7 @@ package io.lsn.controller;
 
 import io.lsn.domain.UploadConfirmation;
 import io.lsn.service.DictionaryImportIntoDBService;
+import io.lsn.service.DictionaryService;
 import io.lsn.service.DictionaryUploadToLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ public class DictionaryController {
     DictionaryUploadToLocationService dictionaryUploadToLocationService;
 
     @Autowired
+    DictionaryService dictionaryService;
+    @Autowired
     DictionaryImportIntoDBService dictionaryImportIntoDBService;
 
     @RequestMapping(value = "/dictionary/uploadToLocation", method = RequestMethod.POST)
@@ -34,6 +37,13 @@ public class DictionaryController {
         return new ResponseEntity<>(dictionaryImportIntoDBService.importFileIntoDB(multipartFile), HttpStatus.OK);
 
     }
+
+    @RequestMapping(value = "/dictionary/export", method = RequestMethod.GET)
+    public ResponseEntity<ExportConfirmation> exportDictionary(@RequestParam("dictionary") String dictionaryName) throws IOException
+    {
+        return new ResponseEntity<ExportConfirmation>(dictionaryService.exportDictionary(dictionaryName),HttpStatus.OK);
+    }
+
 
     @RequestMapping(value = "/home")
     public String home()
