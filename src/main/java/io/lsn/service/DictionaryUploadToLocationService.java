@@ -1,5 +1,6 @@
 package io.lsn.service;
 
+import io.lsn.domain.FileChecker;
 import io.lsn.domain.UploadConfirmation;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,17 +21,7 @@ public class DictionaryUploadToLocationService {
 
         UploadConfirmation uploadConfirmation = new UploadConfirmation();
 
-        if(!multipartFile.getOriginalFilename().endsWith(".xlsx")) {
-            uploadConfirmation.setFileName(multipartFile.getOriginalFilename());
-            uploadConfirmation.setOperationDate(LocalDateTime.now());
-            uploadConfirmation.setUploadMessage("Wybrany plik nie jest arkuszem 'xlsx'.");
-            return uploadConfirmation;
-        }
-
-        if(multipartFile.isEmpty()) {
-            uploadConfirmation.setFileName(multipartFile.getOriginalFilename());
-            uploadConfirmation.setOperationDate(LocalDateTime.now());
-            uploadConfirmation.setUploadMessage("Wybrany plik nie istnieje, spróbuj ponownie.");
+        if(FileChecker.checkGivenFile(multipartFile, uploadConfirmation)) {
             return uploadConfirmation;
         }
 
